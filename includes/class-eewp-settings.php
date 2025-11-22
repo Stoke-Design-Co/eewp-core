@@ -66,6 +66,30 @@ class EEWP_Settings {
 				submit_button();
 				?>
 			</form>
+
+			<hr />
+			<h2><?php esc_html_e( 'Easy English WP Premium', 'easy-english-wp' ); ?></h2>
+			<p>
+				<?php
+				printf(
+					/* translators: %d: maximum enabled posts */
+					esc_html__( 'The Free/Lite version is limited to %d published posts/pages with Easy English enabled.', 'easy-english-wp' ),
+					(int) $this->loader->max_enabled
+				);
+				?>
+			</p>
+			<p><?php esc_html_e( 'Upgrade to Premium to unlock more features (placeholders below):', 'easy-english-wp' ); ?></p>
+			<ul style="list-style: disc; margin-left: 20px;">
+				<li><?php esc_html_e( 'Unlimited posts/pages with Easy English enabled.', 'easy-english-wp' ); ?></li>
+				<li><?php esc_html_e( 'AI-assisted Easy English writing helpers.', 'easy-english-wp' ); ?></li>
+				<li><?php esc_html_e( 'Advanced styling and toolbar customization.', 'easy-english-wp' ); ?></li>
+				<li><?php esc_html_e( 'Additional accessibility and workflow tools.', 'easy-english-wp' ); ?></li>
+			</ul>
+			<p>
+				<a class="button button-primary" href="https://example.com/easy-english-wp/premium" target="_blank" rel="noopener noreferrer">
+					<?php esc_html_e( 'Purchase Premium', 'easy-english-wp' ); ?>
+				</a>
+			</p>
 		</div>
 		<?php
 	}
@@ -193,7 +217,7 @@ class EEWP_Settings {
 		}
 
 		$icon      = isset( $value['icon'] ) ? sanitize_key( $value['icon'] ) : $defaults['icon'];
-		$icons     = array( 'book', 'info', 'list' );
+		$icons     = array( 'book', 'info' );
 		$icon      = in_array( $icon, $icons, true ) ? $icon : $defaults['icon'];
 
 		$bg_color   = isset( $value['bg_color'] ) ? sanitize_hex_color( $value['bg_color'] ) : '';
@@ -240,13 +264,14 @@ class EEWP_Settings {
 		$icons    = array(
 			'book' => __( 'Book icon', 'easy-english-wp' ),
 			'info' => __( 'Info icon', 'easy-english-wp' ),
-			'list' => __( 'List icon', 'easy-english-wp' ),
 		);
 		?>
 		<div class="eewp-toolbar-icons">
 			<?php foreach ( $icons as $key => $label ) : ?>
 				<label style="display:inline-block;margin-right:16px;text-align:center;">
-					<div style="border:1px solid #ccd0d4;border-radius:4px;padding:8px;margin-bottom:6px;"><?php echo wp_kses_post( $this->render_icon( $key ) ); ?></div>
+					<div style="border:1px solid #ccd0d4;border-radius:4px;padding:8px;margin-bottom:6px;">
+						<img src="<?php echo esc_url( EEWP_PLUGIN_URL . 'assets/icons/icon-' . $key . '.svg' ); ?>" alt="" style="width:36px;height:36px;" />
+					</div>
 					<input type="radio" name="eewp_toolbar[icon]" value="<?php echo esc_attr( $key ); ?>" <?php checked( $settings['icon'], $key ); ?> />
 					<span class="screen-reader-text"><?php echo esc_html( $label ); ?></span>
 				</label>

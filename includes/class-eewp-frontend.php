@@ -178,14 +178,15 @@ class EEWP_Frontend {
 	 * @return string
 	 */
 	private function render_icon( $key ) {
-		switch ( $key ) {
-			case 'info':
-				return '<svg width="20" height="20" viewBox="0 0 24 24" role="presentation" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 1 0 10 10A10.011 10.011 0 0 0 12 2Zm0 4a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 12 6Zm1.5 11h-3v-1h1v-4h-1v-1h2v5h1Z"/></svg>';
-			case 'list':
-				return '<svg width="20" height="20" viewBox="0 0 24 24" role="presentation" aria-hidden="true"><path fill="currentColor" d="M4 6h2v2H4zm0 5h2v2H4zm0 5h2v2H4zm4-10h12v2H8zm0 5h12v2H8zm0 5h12v2H8z"/></svg>';
-			case 'book':
-			default:
-				return '<svg width="20" height="20" viewBox="0 0 24 24" role="presentation" aria-hidden="true"><path fill="currentColor" d="M18 2H8a2 2 0 0 0-2 2v15.5a2.5 2.5 0 0 0 3.356 2.329L12 20.5l2.644 1.329A2.5 2.5 0 0 0 18 19.5V4a2 2 0 0 0-2-2Zm0 17.5a.5.5 0 0 1-.724.447L12 18l-5.276 1.947A.5.5 0 0 1 6 19.5V4a.5.5 0 0 1 .5-.5H17a1 1 0 0 1 1 1Z"/></svg>';
+		$icons = array( 'book', 'info' );
+		$key   = in_array( $key, $icons, true ) ? $key : 'book';
+
+		$path = EEWP_PLUGIN_DIR . 'assets/icons/icon-' . $key . '.svg';
+
+		if ( file_exists( $path ) ) {
+			return file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 		}
+
+		return '';
 	}
 }
