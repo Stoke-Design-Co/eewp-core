@@ -4,6 +4,7 @@
 	const data = window.eewpFrontend || {};
 	const postId = data.postId || 0;
 	const toggle = document.querySelector('.eewp-toggle');
+	const toolbar = document.querySelector('.eewp-toolbar');
 	const body = document.body;
 
 	if (!toggle || !postId) {
@@ -31,6 +32,14 @@
 		}
 	}
 
+	function applyToolbarPosition() {
+		if (!toolbar || !data.toolbar || !data.toolbar.position) {
+			return;
+		}
+		toolbar.classList.remove('eewp-toolbar--left', 'eewp-toolbar--right');
+		toolbar.classList.add(`eewp-toolbar--${data.toolbar.position === 'left' ? 'left' : 'right'}`);
+	}
+
 	function init() {
 		const stored = getStoredMode();
 		if (stored === 'easy') {
@@ -38,6 +47,8 @@
 		} else {
 			setMode('normal');
 		}
+
+		applyToolbarPosition();
 
 		toggle.addEventListener('click', (event) => {
 			event.preventDefault();

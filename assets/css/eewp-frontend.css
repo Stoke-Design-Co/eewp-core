@@ -53,9 +53,14 @@ body.eewp-mode-easy .eewp-content-wrapper .eewp-easy-content {
 
 .eewp-toolbar {
 	position: fixed;
-	right: 20px;
-	bottom: 20px;
+	top: var(--eewp-toolbar-top-desktop, 20px);
 	z-index: 1000;
+	right: 20px;
+}
+
+.eewp-toolbar--left {
+	left: 20px;
+	right: auto;
 }
 
 .eewp-toggle {
@@ -65,8 +70,8 @@ body.eewp-mode-easy .eewp-content-wrapper .eewp-easy-content {
 	border: none;
 	border-radius: 999px;
 	padding: 10px 14px;
-	background: #1e73be;
-	color: #fff;
+	background: var(--eewp-toolbar-bg, #1e73be);
+	color: var(--eewp-toolbar-color, #fff);
 	font-weight: 600;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 	cursor: pointer;
@@ -75,7 +80,7 @@ body.eewp-mode-easy .eewp-content-wrapper .eewp-easy-content {
 
 .eewp-toggle:hover,
 .eewp-toggle:focus {
-	background: #155c97;
+	background: var(--eewp-toolbar-bg, #155c97);
 	transform: translateY(-1px);
 	box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
 }
@@ -93,6 +98,7 @@ body.eewp-mode-easy .eewp-content-wrapper .eewp-easy-content {
 	height: 28px;
 	border-radius: 50%;
 	background: rgba(255, 255, 255, 0.2);
+	color: var(--eewp-toolbar-color, #fff);
 	font-size: 14px;
 	line-height: 1;
 }
@@ -109,7 +115,12 @@ body.eewp-mode-easy .eewp-content-wrapper .eewp-easy-content {
 	}
 
 	.eewp-toolbar {
+		top: var(--eewp-toolbar-top-mobile, 12px);
 		right: 12px;
-		bottom: 12px;
+	}
+
+	.eewp-toolbar--left {
+		left: 12px;
+		right: auto;
 	}
 }

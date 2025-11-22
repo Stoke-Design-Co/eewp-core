@@ -290,4 +290,17 @@ class EEWP_Loader {
 
 		return (string) ob_get_clean();
 	}
+
+	/**
+	 * Get toolbar settings merged with defaults.
+	 *
+	 * @return array
+	 */
+	public function get_toolbar_settings() {
+		if ( $this->settings ) {
+			return $this->settings->get_toolbar_settings();
+		}
+
+		return EEWP_Settings::get_toolbar_defaults();
+	}
 }
