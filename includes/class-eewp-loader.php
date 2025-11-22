@@ -45,14 +45,26 @@ class EEWP_Loader {
 	public $settings;
 
 	/**
+	 * @var EEWP_Limit
+	 */
+	public $limit;
+
+	/**
+	 * @var EEWP_Editor
+	 */
+	public $editor;
+
+	/**
 	 * Singleton constructor.
 	 */
 	private function __construct() {
 		add_action( 'init', array( $this, 'register_meta' ) );
 
+		$this->limit    = new EEWP_Limit( $this );
 		$this->admin    = new EEWP_Admin( $this );
 		$this->frontend = new EEWP_Frontend( $this );
 		$this->settings = new EEWP_Settings( $this );
+		$this->editor   = new EEWP_Editor( $this );
 	}
 
 	/**
@@ -79,7 +91,7 @@ class EEWP_Loader {
 				array(
 					'type'              => 'string',
 					'single'            => true,
-					'show_in_rest'      => false,
+					'show_in_rest'      => true,
 					'default'           => '',
 					'auth_callback'     => array( $this, 'meta_auth_callback' ),
 					'sanitize_callback' => array( $this, 'sanitize_enabled_meta' ),
@@ -92,7 +104,7 @@ class EEWP_Loader {
 				array(
 					'type'              => 'array',
 					'single'            => true,
-					'show_in_rest'      => false,
+					'show_in_rest'      => true,
 					'auth_callback'     => array( $this, 'meta_auth_callback' ),
 					'sanitize_callback' => array( $this, 'sanitize_rows_meta' ),
 				)
@@ -230,25 +242,7 @@ class EEWP_Loader {
 	 * @return int
 	 */
 	public function count_enabled_posts( $exclude_post_id = 0 ) {
-		$args = array(
-			'post_type'              => $this->post_types,
-			'post_status'            => 'publish',
-			'meta_key'               => $this->enabled_key,
-			'meta_value'             => 'yes',
-			'posts_per_page'         => -1,
-			'fields'                 => 'ids',
-			'no_found_rows'          => true,
-			'update_post_meta_cache' => false,
-			'update_post_term_cache' => false,
-		);
-
-		if ( $exclude_post_id ) {
-			$args['post__not_in'] = array( (int) $exclude_post_id );
-		}
-
-		$query = new WP_Query( $args );
-
-		return (int) $query->post_count;
+		return $this->limit->count_enabled_posts( $exclude_post_id );
 	}
 
 	/**
@@ -259,7 +253,7 @@ class EEWP_Loader {
 	 * @return bool
 	 */
 	public function has_reached_limit( $exclude_post_id = 0 ) {
-		return $this->count_enabled_posts( $exclude_post_id ) >= $this->max_enabled;
+		return $this->limit->has_reached_limit( $exclude_post_id );
 	}
 
 	/**

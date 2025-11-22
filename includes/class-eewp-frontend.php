@@ -52,6 +52,9 @@ class EEWP_Frontend {
 			'eewpFrontend',
 			array(
 				'postId' => $post_id,
+				'strings' => array(
+					'toggle' => __( 'Toggle Easy English', 'easy-english-wp' ),
+				),
 			)
 		);
 	}
@@ -68,7 +71,7 @@ class EEWP_Frontend {
 			return $content;
 		}
 
-		$post_id = get_the_ID();
+		$post_id = get_queried_object_id() ? get_queried_object_id() : get_the_ID();
 		$easy    = $this->loader->get_easy_content_html( $post_id );
 
 		if ( '' === $easy ) {
@@ -115,6 +118,16 @@ class EEWP_Frontend {
 	 * @return bool
 	 */
 	private function should_display( $require_main_query = false ) {
+		// Avoid admin screens and feeds/previews.
+		if ( is_admin() || is_feed() || is_preview() ) {
+			return false;
+		}
+
+		// Defensive: skip builder preview contexts.
+		if ( function_exists( 'doing_action' ) && ( doing_action( 'elementor/preview/enqueue_styles' ) || doing_action( 'elementor/frontend/the_content' ) ) ) {
+			return false;
+		}
+
 		if ( ! is_singular( $this->loader->post_types ) ) {
 			return false;
 		}
