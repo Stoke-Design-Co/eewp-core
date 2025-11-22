@@ -66,6 +66,9 @@ class EEWP_Frontend {
 					'position' => $toolbar['position'],
 					'icon'     => $toolbar['icon'],
 				),
+				'elementor' => array(
+					'keepSelectors' => $this->get_elementor_keep_selectors(),
+				),
 				'strings' => array(
 					'toggle' => __( 'Toggle Easy English', 'easy-english-wp' ),
 				),
@@ -168,6 +171,31 @@ class EEWP_Frontend {
 		$rows = $this->loader->get_rows( $post_id );
 
 		return ! empty( $rows );
+	}
+
+	/**
+	 * Get selectors that should remain visible on Elementor pages in Easy mode.
+	 *
+	 * @return array
+	 */
+	private function get_elementor_keep_selectors() {
+		$defaults = array(
+			'.elementor-location-header',
+			'.elementor-location-footer',
+			'.eewp-keep',
+		);
+
+		$selectors = apply_filters( 'eewp_elementor_keep_selectors', $defaults );
+
+		$clean = array();
+
+		foreach ( (array) $selectors as $selector ) {
+			if ( is_string( $selector ) && '' !== trim( $selector ) ) {
+				$clean[] = trim( $selector );
+			}
+		}
+
+		return array_values( array_unique( $clean ) );
 	}
 
 	/**

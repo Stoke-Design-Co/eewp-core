@@ -45,6 +45,11 @@ class EEWP_Loader {
 	public $settings;
 
 	/**
+	 * @var EEWP_Elementor
+	 */
+	public $elementor;
+
+	/**
 	 * @var EEWP_Limit
 	 */
 	public $limit;
@@ -60,11 +65,12 @@ class EEWP_Loader {
 	private function __construct() {
 		add_action( 'init', array( $this, 'register_meta' ) );
 
-		$this->limit    = new EEWP_Limit( $this );
-		$this->admin    = new EEWP_Admin( $this );
-		$this->frontend = new EEWP_Frontend( $this );
-		$this->settings = new EEWP_Settings( $this );
-		$this->editor   = new EEWP_Editor( $this );
+		$this->limit     = new EEWP_Limit( $this );
+		$this->admin     = new EEWP_Admin( $this );
+		$this->frontend  = new EEWP_Frontend( $this );
+		$this->settings  = new EEWP_Settings( $this );
+		$this->editor    = new EEWP_Editor( $this );
+		$this->elementor = new EEWP_Elementor( $this );
 	}
 
 	/**

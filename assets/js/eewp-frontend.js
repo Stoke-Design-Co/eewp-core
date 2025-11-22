@@ -6,6 +6,10 @@
 	const toggle = document.querySelector('.eewp-toggle');
 	const toolbar = document.querySelector('.eewp-toolbar');
 	const body = document.body;
+	const elementorConfig = data.elementor || {};
+	const keepSelectors = Array.isArray(elementorConfig.keepSelectors) ? elementorConfig.keepSelectors : [];
+	const elementorSelector = '.elementor-section, .elementor-container';
+	let elementorNodes = [];
 
 	if (!toggle || !postId) {
 		return;
@@ -13,10 +17,50 @@
 
 	const storageKey = 'eewp_mode_site';
 
+	function refreshElementorNodes() {
+		elementorNodes = Array.from(document.querySelectorAll(elementorSelector));
+	}
+
+	function shouldKeep(node) {
+		return keepSelectors.some((selector) => {
+			try {
+				return node.matches(selector) || node.closest(selector);
+			} catch (err) {
+				return false;
+			}
+		});
+	}
+
+	function toggleElementorVisibility(isEasy) {
+		if (!elementorNodes.length) {
+			return;
+		}
+
+		elementorNodes.forEach((node) => {
+			if (shouldKeep(node)) {
+				return;
+			}
+
+			if (isEasy) {
+				if (node.dataset.eewpDisplay === undefined) {
+					node.dataset.eewpDisplay = node.style.display || '';
+				}
+				node.style.display = 'none';
+				return;
+			}
+
+			if (node.dataset.eewpDisplay !== undefined) {
+				node.style.display = node.dataset.eewpDisplay;
+				delete node.dataset.eewpDisplay;
+			}
+		});
+	}
+
 	function setMode(mode) {
 		const isEasy = mode === 'easy';
 		body.classList.toggle('eewp-mode-easy', isEasy);
 		toggle.setAttribute('aria-pressed', isEasy ? 'true' : 'false');
+		toggleElementorVisibility(isEasy);
 		try {
 			localStorage.setItem(storageKey, isEasy ? 'easy' : 'normal');
 		} catch (err) {
@@ -41,6 +85,7 @@
 	}
 
 	function init() {
+		refreshElementorNodes();
 		const stored = getStoredMode();
 		if (stored === 'easy') {
 			setMode('easy');

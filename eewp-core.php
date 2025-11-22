@@ -11,6 +11,7 @@ require_once __DIR__ . '/includes/class-eewp-frontend.php';
 require_once __DIR__ . '/includes/class-eewp-settings.php';
 require_once __DIR__ . '/includes/class-eewp-limit.php';
 require_once __DIR__ . '/includes/class-eewp-editor.php';
+require_once __DIR__ . '/includes/class-eewp-elementor.php';
 
 /**
  * Bootstrap the Easy English WP core loader.
