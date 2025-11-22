@@ -8,9 +8,6 @@
 	const body = document.body;
 	const elementorConfig = data.elementor || {};
 	const keepSelectors = Array.isArray(elementorConfig.keepSelectors) ? elementorConfig.keepSelectors : [];
-	// Target layout wrappers only (sections + flex containers).
-	const elementorSelector = '.elementor-section, .elementor-container, .e-con';
-	let elementorNodes = [];
 
 	if (!toggle || !postId) {
 		return;
@@ -18,54 +15,10 @@
 
 	const storageKey = 'eewp_mode_site';
 
-	function refreshElementorNodes() {
-		elementorNodes = Array.from(document.querySelectorAll(elementorSelector));
-	}
-
-	function shouldKeep(node) {
-		if (node.dataset && node.dataset.eewpRetain === 'yes') {
-			return true;
-		}
-
-		return keepSelectors.some((selector) => {
-			try {
-				return node.matches(selector) || node.closest(selector);
-			} catch (err) {
-				return false;
-			}
-		});
-	}
-
-	function toggleElementorVisibility(isEasy) {
-		if (!elementorNodes.length) {
-			return;
-		}
-
-		elementorNodes.forEach((node) => {
-			if (shouldKeep(node)) {
-				return;
-			}
-
-			if (isEasy) {
-				if (node.dataset.eewpDisplay === undefined) {
-					node.dataset.eewpDisplay = node.style.display || '';
-				}
-				node.style.display = 'none';
-				return;
-			}
-
-			if (node.dataset.eewpDisplay !== undefined) {
-				node.style.display = node.dataset.eewpDisplay;
-				delete node.dataset.eewpDisplay;
-			}
-		});
-	}
-
 	function setMode(mode) {
 		const isEasy = mode === 'easy';
 		body.classList.toggle('eewp-mode-easy', isEasy);
 		toggle.setAttribute('aria-pressed', isEasy ? 'true' : 'false');
-		toggleElementorVisibility(isEasy);
 		try {
 			localStorage.setItem(storageKey, isEasy ? 'easy' : 'normal');
 		} catch (err) {
@@ -89,8 +42,33 @@
 		toolbar.classList.add(`eewp-toolbar--${data.toolbar.position === 'left' ? 'left' : 'right'}`);
 	}
 
+	function buildElementorVisibilityStyles() {
+		const hideTargets = ['.elementor-section', '.e-con'];
+		const keepTargets = [
+			'.elementor-location-header',
+			'.elementor-location-footer',
+			'.eewp-keep',
+			'[data-eewp-retain=\"yes\"]',
+			...keepSelectors,
+		]
+			.map((selector) => (typeof selector === 'string' ? selector.trim() : ''))
+			.filter((selector, index, arr) => selector && arr.indexOf(selector) === index);
+
+		if (!keepTargets.length) {
+			return;
+		}
+
+		const style = document.createElement('style');
+		style.id = 'eewp-elementor-visibility';
+		style.textContent = `
+body.eewp-mode-easy ${hideTargets.join(', body.eewp-mode-easy ')} { display: none !important; }
+body.eewp-mode-easy ${keepTargets.join(', body.eewp-mode-easy ')} { display: revert !important; }
+`;
+		document.head.appendChild(style);
+	}
+
 	function init() {
-		refreshElementorNodes();
+		buildElementorVisibilityStyles();
 		const stored = getStoredMode();
 		if (stored === 'easy') {
 			setMode('easy');

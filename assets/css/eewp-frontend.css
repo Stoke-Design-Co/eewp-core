@@ -18,6 +18,19 @@ body.eewp-mode-easy .eewp-content-wrapper .eewp-easy-content {
 	display: block;
 }
 
+/* Elementor compatibility */
+body.eewp-mode-easy .elementor-section,
+body.eewp-mode-easy .e-con {
+	display: none !important;
+}
+
+body.eewp-mode-easy .elementor-location-header,
+body.eewp-mode-easy .elementor-location-footer,
+body.eewp-mode-easy .eewp-keep,
+body.eewp-mode-easy [data-eewp-retain="yes"] {
+	display: revert !important;
+}
+
 .eewp-container {
 	width: 100%;
 	display: grid;
