@@ -10,6 +10,11 @@ class EEWP_Settings {
 	private $loader;
 
 	/**
+	 * @var string|null
+	 */
+	private $page_hook = null;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param EEWP_Loader $loader Loader instance.
@@ -19,19 +24,37 @@ class EEWP_Settings {
 
 		add_action( 'admin_menu', array( $this, 'register_page' ) );
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 	}
 
 	/**
 	 * Register settings page.
 	 */
 	public function register_page() {
-		add_options_page(
+		$this->page_hook = add_options_page(
 			__( 'Easy English WP (Lite)', 'easy-english-wp' ),
 			__( 'Easy English WP', 'easy-english-wp' ),
 			'manage_options',
 			'easy-english-wp',
 			array( $this, 'render_page' )
 		);
+	}
+
+	/**
+	 * Enqueue admin assets for the settings page.
+	 *
+	 * @param string $hook_suffix Current admin page hook.
+	 */
+	public function enqueue_assets( $hook_suffix ) {
+		if ( empty( $this->page_hook ) || $hook_suffix !== $this->page_hook ) {
+			return;
+		}
+
+		wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
+
+		$inline = '(function($){$(function(){$(".eewp-color-picker").wpColorPicker();});})(jQuery);';
+		wp_add_inline_script( 'wp-color-picker', $inline );
 	}
 
 	/**
@@ -286,7 +309,7 @@ class EEWP_Settings {
 	public function render_bg_field() {
 		$settings = $this->get_toolbar_settings();
 		?>
-		<input type="text" name="eewp_toolbar[bg_color]" value="<?php echo esc_attr( $settings['bg_color'] ); ?>" class="regular-text" />
+		<input type="text" name="eewp_toolbar[bg_color]" value="<?php echo esc_attr( $settings['bg_color'] ); ?>" class="eewp-color-picker" data-default-color="<?php echo esc_attr( $settings['bg_color'] ); ?>" />
 		<?php
 	}
 
@@ -296,7 +319,7 @@ class EEWP_Settings {
 	public function render_text_field() {
 		$settings = $this->get_toolbar_settings();
 		?>
-		<input type="text" name="eewp_toolbar[text_color]" value="<?php echo esc_attr( $settings['text_color'] ); ?>" class="regular-text" />
+		<input type="text" name="eewp_toolbar[text_color]" value="<?php echo esc_attr( $settings['text_color'] ); ?>" class="eewp-color-picker" data-default-color="<?php echo esc_attr( $settings['text_color'] ); ?>" />
 		<?php
 	}
 
