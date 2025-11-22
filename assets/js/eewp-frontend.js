@@ -8,8 +8,8 @@
 	const body = document.body;
 	const elementorConfig = data.elementor || {};
 	const keepSelectors = Array.isArray(elementorConfig.keepSelectors) ? elementorConfig.keepSelectors : [];
-	// Cover classic sections/containers and new flexbox containers (.e-con).
-	const elementorSelector = '.elementor-section, .elementor-container, .elementor-element, .e-con';
+	// Target layout wrappers only (sections + flex containers).
+	const elementorSelector = '.elementor-section, .elementor-container, .e-con';
 	let elementorNodes = [];
 
 	if (!toggle || !postId) {
@@ -23,6 +23,10 @@
 	}
 
 	function shouldKeep(node) {
+		if (node.dataset && node.dataset.eewpRetain === 'yes') {
+			return true;
+		}
+
 		return keepSelectors.some((selector) => {
 			try {
 				return node.matches(selector) || node.closest(selector);

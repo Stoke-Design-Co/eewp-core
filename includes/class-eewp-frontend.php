@@ -183,6 +183,7 @@ class EEWP_Frontend {
 			'.elementor-location-header',
 			'.elementor-location-footer',
 			'.eewp-keep',
+			'[data-eewp-retain="yes"]',
 		);
 
 		$selectors = apply_filters( 'eewp_elementor_keep_selectors', $defaults );

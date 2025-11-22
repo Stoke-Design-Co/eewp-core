@@ -28,6 +28,7 @@ class EEWP_Elementor {
 			return;
 		}
 
+		add_action( 'elementor/element/common/_section_style/after_section_end', array( $this, 'register_controls' ), 10, 2 );
 		add_action( 'elementor/element/container/section_effects/after_section_end', array( $this, 'register_controls' ), 10, 2 );
 		add_action( 'elementor/element/container/section_advanced/after_section_end', array( $this, 'register_controls' ), 10, 2 );
 		add_action( 'elementor/element/section/section_effects/after_section_end', array( $this, 'register_controls' ), 10, 2 );
@@ -84,5 +85,6 @@ class EEWP_Elementor {
 		}
 
 		$element->add_render_attribute( '_wrapper', 'class', 'eewp-keep' );
+		$element->add_render_attribute( '_wrapper', 'data-eewp-retain', 'yes' );
 	}
 }
