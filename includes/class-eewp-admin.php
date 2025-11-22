@@ -31,6 +31,11 @@ class EEWP_Admin {
 		add_action( 'save_post', array( $this, 'save_meta' ), 10, 3 );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_assets' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+
+		foreach ( $this->loader->post_types as $post_type ) {
+			add_filter( "manage_{$post_type}_posts_columns", array( $this, 'add_list_column' ) );
+			add_action( "manage_{$post_type}_posts_custom_column", array( $this, 'render_list_column' ), 10, 2 );
+		}
 	}
 
 	/**
@@ -309,5 +314,36 @@ class EEWP_Admin {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Add Easy English column to lists.
+	 *
+	 * @param array $columns Columns.
+	 * @return array
+	 */
+	public function add_list_column( $columns ) {
+		$columns['eewp_enabled'] = __( 'Easy English', 'easy-english-wp' );
+		return $columns;
+	}
+
+	/**
+	 * Render Easy English column.
+	 *
+	 * @param string $column  Column name.
+	 * @param int    $post_id Post ID.
+	 */
+	public function render_list_column( $column, $post_id ) {
+		if ( 'eewp_enabled' !== $column ) {
+			return;
+		}
+
+		$enabled = get_post_meta( $post_id, $this->loader->enabled_key, true );
+
+		if ( 'yes' === $enabled ) {
+			echo '<span class="dashicons dashicons-yes" aria-hidden="true"></span><span class="screen-reader-text">' . esc_html__( 'Easy English enabled', 'easy-english-wp' ) . '</span>';
+		} else {
+			echo '&#8212;'; // em dash placeholder.
+		}
 	}
 }
