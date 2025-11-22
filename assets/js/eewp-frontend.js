@@ -8,7 +8,8 @@
 	const body = document.body;
 	const elementorConfig = data.elementor || {};
 	const keepSelectors = Array.isArray(elementorConfig.keepSelectors) ? elementorConfig.keepSelectors : [];
-	const elementorSelector = '.elementor-section, .elementor-container';
+	// Cover classic sections/containers and new flexbox containers (.e-con).
+	const elementorSelector = '.elementor-section, .elementor-container, .elementor-element, .e-con';
 	let elementorNodes = [];
 
 	if (!toggle || !postId) {
