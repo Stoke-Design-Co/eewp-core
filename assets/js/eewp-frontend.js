@@ -11,7 +11,7 @@
 		return;
 	}
 
-	const storageKey = `eewp_mode_${postId}`;
+	const storageKey = 'eewp_mode_site';
 
 	function setMode(mode) {
 		const isEasy = mode === 'easy';
